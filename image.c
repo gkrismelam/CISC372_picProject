@@ -3,12 +3,23 @@
 #include <time.h>
 #include <string.h>
 #include "image.h"
+#include <pthread.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
+
+int thread_count;
+
+typedef struct {
+    Image* src;
+    Image* dest;
+    Matrix kernel;
+    int start_row;
+    int end_row;
+} ThreadData;
 
 //An array of kernel matrices to be used for image convolution.  
 //The indexes of these match the enumeration from the header file. ie. algorithms[BLUR] returns the kernel corresponding to a box blur.
@@ -51,20 +62,45 @@ uint8_t getPixelValue(Image* srcImage,int x,int y,int bit,Matrix algorithm){
     return result;
 }
 
+void* worker(void* arg) {
+    ThreadData* d = (ThreadData*)arg;
+
+    for (int r = d->start_row; r < d->end_row; r++) {
+        for (int c = 0; c < d->src->width; c++) {
+            for (int b = 0; b < d->src->bpp; b++) {
+                d->dest->data[Index(c, r, d->src->width, b, d->src->bpp)] =
+                    getPixelValue(d->src, c, r, b, d->kernel);
+            }
+        }
+    }
+    return NULL;
+}
+
 //convolute:  Applies a kernel matrix to an image
 //Parameters: srcImage: The image being convoluted
 //            destImage: A pointer to a  pre-allocated (including space for the pixel array) structure to receive the convoluted image.  It should be the same size as srcImage
 //            algorithm: The kernel matrix to use for the convolution
 //Returns: Nothing
 void convolute(Image* srcImage,Image* destImage,Matrix algorithm){
-    int row,pix,bit,span;
-    span=srcImage->bpp*srcImage->bpp;
-    for (row=0;row<srcImage->height;row++){
-        for (pix=0;pix<srcImage->width;pix++){
-            for (bit=0;bit<srcImage->bpp;bit++){
-                destImage->data[Index(pix,row,srcImage->width,bit,srcImage->bpp)]=getPixelValue(srcImage,pix,row,bit,algorithm);
-            }
-        }
+    pthread_t threads[thread_count];
+    ThreadData data[thread_count];
+
+    int rows_per_thread = src->height / thread_count;
+    
+    for (int i = 0; i < thread_count; i++) {
+        data[i].src = src;
+        data[i].dest = dest;
+        data[i].kernel = kernel;
+        data[i].start_row = i * rows_per_thread;
+        data[i].end_row = (i == thread_count - 1)
+            ? src->height
+            : (i + 1) * rows_per_thread;
+
+        pthread_create(&threads[i], NULL, worker, &data[i]);
+    }
+
+    for (int i = 0; i < thread_count; i++) {
+        pthread_join(threads[i], NULL);
     }
 }
 
