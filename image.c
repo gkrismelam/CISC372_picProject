@@ -76,8 +76,6 @@ void* worker(void* arg) {
     return NULL;
 }
 
-thread_count = 4;
-
 //convolute:  Applies a kernel matrix to an image
 //Parameters: srcImage: The image being convoluted
 //            destImage: A pointer to a  pre-allocated (including space for the pixel array) structure to receive the convoluted image.  It should be the same size as srcImage
@@ -87,7 +85,7 @@ void convolute(Image* srcImage,Image* destImage,Matrix algorithm){
     pthread_t threads[thread_count];
     ThreadData data[thread_count];
 
-    int rows_per_thread = srcImage->height / thread_count;
+    int rows_per_thread = (srcImage->height + thread_count - 1) / thread_count;
     
     for (int i = 0; i < thread_count; i++) {
         data[i].src = srcImage;
@@ -130,6 +128,8 @@ enum KernelTypes GetKernelType(char* type){
 int main(int argc,char** argv){
     long t1,t2;
     t1=time(NULL);
+
+    thread_count = 4;
 
     stbi_set_flip_vertically_on_load(0); 
     if (argc!=3) return Usage();
