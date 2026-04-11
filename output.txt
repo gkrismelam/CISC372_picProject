@@ -1,0 +1,103 @@
+     for (int i = 0; i < thread_count; i++) {
+              ^
+image.c:90:14: note: previous definition of 'i' was here
+     for (int i = 0; i < thread_count; i++) {
+              ^
+image.c:102:5: error: 'for' loop initial declarations are only allowed in C99 mode
+     for (int i = 0; i < thread_count; i++) {
+     ^
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ srun gcc image.c -o image -fopenmp -lm -gnu=99 
+cc1: error: unrecognised debug output level "nu=99"
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ srun gcc image.c -o image -fopenmp -lm -std=gnu99
+[gmelam@r1n13 CISC372_picProject]$ srun ./image pic1.jpg edge
+Took 7 seconds
+[gmelam@r1n13 CISC372_picProject]$ exit
+exit
+
+Script done on Fri Apr 10 22:38:07 2026
+[gmelam@r1n13 CISC372_picProject]$ clear
+
+[gmelam@r1n13 CISC372_picProject]$ cat output.txt
+Script started on Fri Apr 10 22:33:21 2026
+[gmelam@r1n13 CISC372_picProject]$ ./image_pthreads pic1.jpg edge
+Took 7 seconds
+[gmelam@r1n13 CISC372_picProject]$ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+[gmelam@r1n13 CISC372_picProject]$ srun ./image pic1.jpg edge
+/home/4376/CISC372_picProject/./image: /lib64/libm.so.6: version `GLIBC_2.29' not found (required by /home/4376/CISC372_picProject/./image)
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ gcc image.c -o image_openmp -fopenmp -lm
+image.c: In function 'worker':
+image.c:68:5: error: 'for' loop initial declarations are only allowed in C99 mode
+     for (int r = d->start_row; r < d->end_row; r++) {
+     ^
+image.c:68:5: note: use option -std=c99 or -std=gnu99 to compile your code
+image.c:69:9: error: 'for' loop initial declarations are only allowed in C99 mode
+         for (int c = 0; c < d->src->width; c++) {
+         ^
+image.c:70:13: error: 'for' loop initial declarations are only allowed in C99 mode
+             for (int b = 0; b < d->src->bpp; b++) {
+             ^
+image.c: In function 'convolute':
+image.c:90:5: error: 'for' loop initial declarations are only allowed in C99 mode
+     for (int i = 0; i < thread_count; i++) {
+     ^
+image.c:102:14: error: redefinition of 'i'
+     for (int i = 0; i < thread_count; i++) {
+              ^
+image.c:90:14: note: previous definition of 'i' was here
+     for (int i = 0; i < thread_count; i++) {
+              ^
+image.c:102:5: error: 'for' loop initial declarations are only allowed in C99 mode
+     for (int i = 0; i < thread_count; i++) {
+     ^
+[gmelam@r1n13 CISC372_picProject]$ gcc image.c -o image_openmp -fopenmp -lm -std=gnu99
+[gmelam@r1n13 CISC372_picProject]$ srun ./image pic1.jpg edge
+/home/4376/CISC372_picProject/./image: /lib64/libm.so.6: version `GLIBC_2.29' not found (required by /home/4376/CISC372_picProject/./image)
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ srun image pic1.jpg edge
+image: /lib64/libm.so.6: version `GLIBC_2.29' not found (required by image)
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ srun image pic1.jpg edge
+image: /lib64/libm.so.6: version `GLIBC_2.29' not found (required by image)
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ srun ./image pic1.jpg edge
+/home/4376/CISC372_picProject/./image: /lib64/libm.so.6: version `GLIBC_2.29' not found (required by /home/4376/CISC372_picProject/./image)
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ srun gcc image.c -o image -fopenmp -lm
+image.c: In function 'worker':
+image.c:68:5: error: 'for' loop initial declarations are only allowed in C99 mode
+     for (int r = d->start_row; r < d->end_row; r++) {
+     ^
+image.c:68:5: note: use option -std=c99 or -std=gnu99 to compile your code
+image.c:69:9: error: 'for' loop initial declarations are only allowed in C99 mode
+         for (int c = 0; c < d->src->width; c++) {
+         ^
+image.c:70:13: error: 'for' loop initial declarations are only allowed in C99 mode
+             for (int b = 0; b < d->src->bpp; b++) {
+             ^
+image.c: In function 'convolute':
+image.c:90:5: error: 'for' loop initial declarations are only allowed in C99 mode
+     for (int i = 0; i < thread_count; i++) {
+     ^
+image.c:102:14: error: redefinition of 'i'
+     for (int i = 0; i < thread_count; i++) {
+              ^
+image.c:90:14: note: previous definition of 'i' was here
+     for (int i = 0; i < thread_count; i++) {
+              ^
+image.c:102:5: error: 'for' loop initial declarations are only allowed in C99 mode
+     for (int i = 0; i < thread_count; i++) {
+     ^
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ srun gcc image.c -o image -fopenmp -lm -gnu=99 
+cc1: error: unrecognised debug output level "nu=99"
+srun: error: r1n13: task 0: Exited with exit code 1
+[gmelam@r1n13 CISC372_picProject]$ srun gcc image.c -o image -fopenmp -lm -std=gnu99
+[gmelam@r1n13 CISC372_picProject]$ srun ./image pic1.jpg edge
+Took 7 seconds
+[gmelam@r1n13 CISC372_picProject]$ exit
+exit
+
+Script done on Fri Apr 10 22:38:07 2026
