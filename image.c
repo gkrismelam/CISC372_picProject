@@ -90,10 +90,10 @@ void convolute(Image* srcImage,Image* destImage,Matrix algorithm){
     for (int i = 0; i < thread_count; i++) {
         data[i].src = srcImage;
         data[i].dest = destImage;
-        data[i].kernel = algorithm;
+        memcpy(data[i].kernel, algorithm, sizeof(Matrix));
         data[i].start_row = i * rows_per_thread;
         data[i].end_row = (i == thread_count - 1)
-            ? src->height
+            ? srcImage->height
             : (i + 1) * rows_per_thread;
 
         pthread_create(&threads[i], NULL, worker, &data[i]);
