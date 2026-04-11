@@ -76,6 +76,8 @@ void* worker(void* arg) {
     return NULL;
 }
 
+thread_count = 4;
+
 //convolute:  Applies a kernel matrix to an image
 //Parameters: srcImage: The image being convoluted
 //            destImage: A pointer to a  pre-allocated (including space for the pixel array) structure to receive the convoluted image.  It should be the same size as srcImage
